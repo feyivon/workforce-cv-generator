@@ -43,7 +43,7 @@ Make the language strong, active, and professional.
 Do NOT include any preamble like "Here is your CV". Just output the CV directly.
 """
     message = client.messages.create(
-        model="claude-sonnet-4-5",
+        model="claude-haiku-4-5-20251001",
         max_tokens=2000,
         messages=[{"role": "user", "content": prompt}]
     )
@@ -78,7 +78,7 @@ Use a proper letter format with greeting, 3-4 strong paragraphs, and a closing.
 Do NOT include any preamble. Just output the cover letter directly.
 """
     message = client.messages.create(
-        model="claude-sonnet-4-5",
+        model="claude-haiku-4-5-20251001",
         max_tokens=1500,
         messages=[{"role": "user", "content": prompt}]
     )
