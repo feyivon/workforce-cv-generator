@@ -1,5 +1,6 @@
 import streamlit as st
-import anthropic
+import google.generativeai as genai
+# import anthropic
 from fpdf import FPDF
 import os
 import tempfile
@@ -7,11 +8,11 @@ from dotenv import load_dotenv
 
 _ = load_dotenv()
 
-api_key = st.secrets.get("ANTHROPIC_API_KEY", None) if hasattr(st, "secrets") else None
+api_key = st.secrets.get("GEMINI_API_KEY", None) if hasattr(st, "secrets") else None
 if not api_key:
-    api_key = os.getenv("ANTHROPIC_API_KEY")
-client = anthropic.Anthropic(api_key=api_key)
-
+    api_key = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=api_key)
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 
 # AI FUNCTIONS
@@ -45,13 +46,8 @@ Use clear section headers like: PROFESSIONAL SUMMARY, WORK EXPERIENCE, EDUCATION
 Make the language strong, active, and professional.
 Do NOT include any preamble like "Here is your CV". Just output the CV directly.
 """
-    message = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=2000,
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return message.content[0].text
-
+    response = model.generate_content(prompt)
+    return response.text
 
 def generate_cover_letter(name, email, phone, location, job_title, company_name, job_description, experience, skills, extra_note):
     prompt = f"""
@@ -80,13 +76,8 @@ Write a complete, professional cover letter now.
 Use a proper letter format with greeting, 3-4 strong paragraphs, and a closing.
 Do NOT include any preamble. Just output the cover letter directly.
 """
-    message = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=1500,
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return message.content[0].text
-
+    response = model.generate_content(prompt)
+    return response.text
 
 # PDF GENERATION
 def create_pdf(text, filename="document.pdf"):
